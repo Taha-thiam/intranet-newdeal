@@ -24,10 +24,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Scan vulnerabilities with Trivy
+      - name: Scan vulnerabilities with Trivy (filesystem)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/intranet-newdeal:latest
+          scan-type: 'fs'
+          scan-ref: '.'
           format: table
           exit-code: '0'
           severity: HIGH,CRITICAL
@@ -35,8 +36,7 @@ jobs:
       - name: Scan secrets with Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
   push:
     name: Job 3 - Push to Docker Hub
     runs-on: ubuntu-latest
